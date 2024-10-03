@@ -948,15 +948,6 @@ class MujocoViewer:
                 camera_buffers["depth_buffer"][camera_name] = copy.deepcopy(camera.depth_buffer)
                 camera_buffers["frame_buffer"][camera_name] = copy.deepcopy(camera.frame_buffer)
                 camera_buffers["frame_stamp"][camera_name] = copy.deepcopy(camera.frame_stamp)
-                # if write_to: [NOT-USED: Implementation to save frames directly]
-                #     imageio.imwrite(
-                #         "{}/{}.png".format(write_to, camera_name.replace("\\", "_")), 
-                #         camera_buffers["frame_buffer"][camera_name]
-                #     )
-                #     imageio.imwrite(
-                #         "{}/{}_gray.png".format(write_to, camera_name.replace("\\", "_")), 
-                #         camera_buffers["depth_buffer"][camera_name]
-                #     )
         return camera_buffers
 
     def save_last_available_captured_scrnshot_safe(self):
