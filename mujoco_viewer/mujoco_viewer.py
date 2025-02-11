@@ -865,9 +865,12 @@ class MujocoViewer:
             mujoco.mjr_render(self._mj.camera_data.mj_viewport, self._mj.config.scn, self._mj.config.ctx)
             
             # read images:
-            if if_capture_req:
-                mujoco.mjr_readPixels(img_buffer, None, self._mj.camera_data.mj_viewport, self._mj.config.ctx)
-                        
+            # if if_capture_req:
+            mujoco.mjr_readPixels(img_buffer, None, self._mj.camera_data.mj_viewport, self._mj.config.ctx)
+            # img_buffer_flipped = np.flipud(img_buffer)
+            self._mj.camera_data.frame_buffer = img_buffer
+            self._mj.camera_data.frame_stamp  = current_frame_stamp
+
             # on-scrn render:
             if is_on_scrn:
                 # overlay items
@@ -902,10 +905,10 @@ class MujocoViewer:
         
         if if_capture_req:
             # cache buffer:
-            with self._mj_lock:
-                # img_buffer_flipped = np.flipud(img_buffer)
-                self._mj.camera_data.frame_buffer = img_buffer
-                self._mj.camera_data.frame_stamp  = current_frame_stamp
+            # with self._mj_lock:
+            #     # img_buffer_flipped = np.flipud(img_buffer)
+            #     self._mj.camera_data.frame_buffer = img_buffer
+            #     self._mj.camera_data.frame_stamp  = current_frame_stamp
             # reset capture flag:
             with self._viewer_config_lock:
                 if_capture_req = self._viewer_config.clear_viewer_status_unsafe(_VIEWER_STATUS_MAP.CAPTURE_SCRNSHOT)
@@ -949,6 +952,19 @@ class MujocoViewer:
                 camera_buffers["frame_buffer"][camera_name] = copy.deepcopy(camera.frame_buffer)
                 camera_buffers["frame_stamp"][camera_name] = copy.deepcopy(camera.frame_stamp)
         return camera_buffers
+    
+    def acquire_viewport_frames_safe(self):
+        
+        viewport_buffers = {"frame_buffer":{}, "frame_stamp":{}}
+        with self._mj_lock:
+            img_buffer = self._mj.camera_data.frame_buffer
+            frame_stamp = self._mj.camera_data.frame_stamp
+            if img_buffer is not None and frame_stamp >= 0:
+                img_buffer_corrected = np.flipud(img_buffer)
+                # save image:
+                viewport_buffers["frame_buffer"] = copy.deepcopy(img_buffer_corrected)
+                viewport_buffers["frame_stamp"] = copy.deepcopy(frame_stamp)
+        return viewport_buffers
 
     def save_last_available_captured_scrnshot_safe(self):
         with self._viewer_config_lock:
