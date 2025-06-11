@@ -247,12 +247,12 @@ class MujocoViewer:
             # camera buffer:
             # Set camera parameters: https://github.com/openai/mujoco-py/blob/c5f60322467ec8ecc0db64c3e18a4da762c27e45/mujoco_py/pxd/mjvisualize.pxd#L124
             self._mj.camera_data.mj_cam       = mujoco.MjvCamera()
-            self._mj.camera_data.mj_cam.lookat[0] = 0
-            self._mj.camera_data.mj_cam.lookat[1] = 0
-            self._mj.camera_data.mj_cam.lookat[2] = 0
-            self._mj.camera_data.mj_cam.distance = 10
-            self._mj.camera_data.mj_cam.azimuth = 180
-            self._mj.camera_data.mj_cam.elevation = -15
+            # self._mj.camera_data.mj_cam.lookat[0] = 0
+            # self._mj.camera_data.mj_cam.lookat[1] = 0
+            # self._mj.camera_data.mj_cam.lookat[2] = 0
+            # self._mj.camera_data.mj_cam.distance = 10
+            # self._mj.camera_data.mj_cam.azimuth = 180
+            # self._mj.camera_data.mj_cam.elevation = -15
             self._mj.camera_data.mj_viewport  = mujoco.MjrRect(0, 0, ww, wh)
             self._mj.camera_data.depth_buffer = None # disabled
             self._mj.camera_data.frame_buffer = np.zeros((wh, ww, 3), dtype=np.uint8)
